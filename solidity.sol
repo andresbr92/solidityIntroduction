@@ -7,13 +7,19 @@ contract CrowdFunding {
     string public name;
     string public description;
     address payable public author;
-    string public state = "Opened";
+    uint public state = 0;
     uint256 public funds;
     uint256 public fundraisingGoal;
 
     event ProjectFunded(string projectId, uint256 value);
 
     event ProjectStateChanged(string id, string state);
+
+		error projectClosed(uint unit);
+
+		error projectSameState(uint unit);
+
+		error fundEqualToCero(uint unit);
 
     constructor(
         string memory _id,
@@ -42,13 +48,28 @@ contract CrowdFunding {
     }
 
     function fundProject() public payable isNotAuthor {
+			
+			if(state == 1) {
+				require(msg.value != 0, "You can not fund a project with 0 ether");
         author.transfer(msg.value);
         funds += msg.value;
         emit ProjectFunded(id, msg.value);
+
+			} else if (state == 0) {
+				revert projectClosed(state);
+
+			}
+			
     }
 
-    function changeProjectState(string calldata newState) public isAuthor {
+    function changeProjectState(uint newState) public isAuthor {
+			if(state == newState) {
+				revert projectSameState(newState);
+
+
+			} else {
         state = newState;
-        emit ProjectStateChanged(id, newState);
+        emit ProjectStateChanged(id, 'state');
+			}
     }
 }
