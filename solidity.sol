@@ -3,6 +3,18 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 contract CrowdFunding {
+		struct Project {
+			string id;
+			string name;
+			string description;
+			address payable author;
+			uint state;
+			uint256 fundraisingGoal;
+			uint256 funds;
+		}
+		Project public project;
+		
+
     string public id;
     string public name;
     string public description;
@@ -27,11 +39,7 @@ contract CrowdFunding {
         string memory _description,
         uint256 _fundraisingGoal
     ) {
-        id = _id;
-        name = _name;
-        description = _description;
-        fundraisingGoal = _fundraisingGoal;
-        author = payable(msg.sender);
+			project = Project(_id, _name, _description, payable(msg.sender), 0, 0, _fundraisingGoal);
     }
 
     modifier isAuthor() {
@@ -51,9 +59,9 @@ contract CrowdFunding {
 			
 			if(state == 1) {
 				require(msg.value != 0, "You can not fund a project with 0 ether");
-        author.transfer(msg.value);
-        funds += msg.value;
-        emit ProjectFunded(id, msg.value);
+        project.author.transfer(msg.value);
+        project.funds += msg.value;
+        emit ProjectFunded(project.id, msg.value);
 
 			} else if (state == 0) {
 				revert projectClosed(state);
@@ -68,7 +76,7 @@ contract CrowdFunding {
 
 
 			} else {
-        state = newState;
+        project.state = newState;
         emit ProjectStateChanged(id, 'state');
 			}
     }
