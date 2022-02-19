@@ -3,9 +3,23 @@ pragma solidity >0.7.0 <0.9.0;
 
 
 contract Functions {
+	address private owner;
+	constructor () {
+		owner = msg.sender;
+	}
 
-	function Sum(uint num1, uint num2) public pure returns(uint) {
+
+
+
+	function Sum(uint num1, uint num2) public view IsOwner returns(uint) {
 		return sumIntern(num1, num2);
+	}
+	// modifiers
+	modifier IsOwner() {
+		if(msg.sender != owner) {
+			revert();
+			_;
+		}
 	}
 
 	function sumIntern (uint num1, uint num2) private pure returns(uint) {
