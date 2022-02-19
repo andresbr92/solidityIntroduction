@@ -11,15 +11,13 @@ contract Functions {
 
 
 
-	function Sum(uint num1, uint num2) public view IsOwner returns(uint) {
+	function Sum(uint num1, uint num2) public view IsOwner returns (uint) {
 		return sumIntern(num1, num2);
 	}
 	// modifiers
 	modifier IsOwner() {
-		if(msg.sender != owner) {
-			revert();
-			_;
-		}
+		require(msg.sender == owner, "Only the owner can call this function");
+		_;
 	}
 
 	function sumIntern (uint num1, uint num2) private pure returns(uint) {
