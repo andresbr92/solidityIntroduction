@@ -1,32 +1,43 @@
-// SPDX-License-Identifier: GPL-2.0-or-later	
+// SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity >0.7.0 <0.9.0;
 
-
 contract Functions {
-	address private owner;
-	constructor () {
-		owner = msg.sender;
-	}
+    address private owner;
+		// types of storage
+		// storage is a type of storage that is stored in the blockchain
+		// memory is a type of storage that is stored in the stack.
+		// calldata is a type of storage used by functions parameters.
 
+    constructor() {
+        owner = msg.sender;
+    }
 
+    function Sum(uint256 num1, uint256 num2)
+        public
+        view
+        IsOwner
+        returns (uint256)
+    {
+        return sumIntern(num1, num2);
+    }
 
+    // modifiers
+    modifier IsOwner() {
+        require(msg.sender == owner, "Only the owner can call this function");
+        _;
+    }
 
-	function Sum(uint num1, uint num2) public view IsOwner returns (uint) {
-		return sumIntern(num1, num2);
-	}
-	// modifiers
-	modifier IsOwner() {
-		require(msg.sender == owner, "Only the owner can call this function");
-		_;
-	}
+    function sumIntern(uint256 num1, uint256 num2)
+        private
+        pure
+        returns (uint256)
+    {
+        return num1 + num2;
+    }
 
-	function sumIntern (uint num1, uint num2) private pure returns(uint) {
-		return num1 + num2;
-	}
+    uint256 private result;
 
-	uint private result;
-
-	function ObtainResult() public view returns(uint) {
-		return result;
-	}
+    function ObtainResult() public view returns (uint256) {
+        return result;
+    }
 }
